@@ -96,6 +96,14 @@ router.put("/valPorton/:id", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
+router.get("/recibe/:id", (req,res)=>{
+    const {id} = req.params;
+    prototypeSchema
+        .find({_id:id}, {estPuerta: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
 
 //********************************************************************************** */
 

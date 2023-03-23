@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const prototypeSchema = mongoose.Schema({
-    idDevice: {
-        type: String,
-        require: true
-    },
     estPuerta: {
         type: String,
         require: true
