@@ -49,4 +49,55 @@ router.delete("/prototype/:id", (req,res)=>{
 })
 
 
+//********************************************************************************** */
+//obtener estado de puerta
+router.get("/estPuerta/:id", (req,res)=>{
+    const {id} = req.params;
+    prototypeSchema
+        .find({_id:id}, {estPuerta: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+//obtener valor del porton
+router.get("/estPorton/:id", (req,res)=>{
+    const {id} = req.params;
+    prototypeSchema
+        .find({_id:id}, {estPorton: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+//obtener valor del servo
+router.get("/valPuerta/:id", (req,res)=>{
+    const {id} = req.params;
+    prototypeSchema
+        .find({_id:id}, {servo: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+//actualizar valor del servo
+router.put("/valPuerta/:id", (req,res)=>{
+    const {id} = req.params;
+    const {servo} = req.body;
+    prototypeSchema
+        .updateOne({_id: id},{$set :{servo}})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+router.put("/valPorton/:id", (req,res)=>{
+    const {id} = req.params;
+    const {estPorton} = req.body;
+    prototypeSchema
+        .updateOne({_id: id},{$set :{estPorton}})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+
+//********************************************************************************** */
+
+
 module.exports = router;
