@@ -1,3 +1,5 @@
-### Incluye estas variables de entorno
+### Incluye estas variables de entorno ###
 
-MONGO_URI
+Variable de ambiente proporcionada por Mongo Atlas
+
+    MONGO_URI
