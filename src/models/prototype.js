@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const prototypeSchema = mongoose.Schema({
+
     estPuerta: {
         type: String,
         require: true

@@ -96,11 +96,30 @@ router.put("/valPorton/:id", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
-router.get("/recibe/:id", (req,res)=>{
+router.post("/recibe/:id", (req,res)=>{
     const {id} = req.params;
+    const {estPuerta} = req.body;
+    const respuesta = prototypeSchema.find({_id:id},{servo: 1, _id: 0}).then((data) => res.json(data)).catch((error)=> res.json({message: error}));
+
     prototypeSchema
-        .find({_id:id}, {estPuerta: 1, _id: 0})
-        .then((data) => res.json(data))
+        .updateOne({_id: id},{$set :{estPuerta}})
+        .then(
+            // (data) => res.json(data)
+            respuesta
+            )
+        .catch((error)=> res.json({message: error}))
+})
+
+router.post("/recibe2/:id", (req,res)=>{
+    const {id} = req.params;
+    const {Porton} = req.body;
+    const respuesta = prototypeSchema.find({_id:id},{estPorton: 1, _id: 0}).then((data) => res.json(data)).catch((error)=> res.json({message: error}));
+
+    prototypeSchema
+        .updateOne({_id: id},{$set :{Porton}})
+        .then(
+            respuesta
+            )
         .catch((error)=> res.json({message: error}))
 })
 
