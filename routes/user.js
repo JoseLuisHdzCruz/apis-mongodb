@@ -31,6 +31,15 @@ router.get("/users/:id", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
+//get a user
+router.get("/obtPregunta", (req,res)=>{
+    const {Correo} = req.body;
+    userSchema
+        .find({Correo: Correo},{Pregunta: 1, Usuario: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
 //update a user
 
 
@@ -94,6 +103,23 @@ async function updUser (req,res){
 router.put("/users/:id", updUser)
 
 // //*****************  Login  ********************* */
+
+// router.get("/log/", (req,res)=>{
+//     const {Usuario, Password} = req.body;
+
+//     if (!Usuario || !Password) {
+//         return res.status(400).send('Datos incompletos');
+//       }
+    
+    
+
+//     // Si el login es válido
+//     req.session.user = user;
+//     res.send('Login exitoso');
+
+//     // Si el login no es válido
+//     res.status(401).send('Credenciales inválidas');
+// })
 
 // async function authenticateUser(req,res) {
 //     // Buscar al usuario en la base de datos
