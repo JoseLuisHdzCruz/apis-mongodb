@@ -43,33 +43,34 @@ router.get("/product/:id", (req,res)=>{
 
 // router.put("/product/:id", upload.single('Imagen'), (req,res)=>{
 //     const {id} = req.params;
-//     const product = productSchema(req.body);
-//     const {Producto, Descripcion, Precio, Stock} = req.body;
+//     // const product = productSchema(req.body);
+//     const product = productSchema({
+//            Producto : req.body,
+//            Descripcion : req.body,
+//            Precio : req.body,
+//            Stock : req.body,
+//            Imagen : req.file
+//           }) ;
 
-//     if(req.file){
-//         const {Imagen} = req.file;
-//         product.setImagen(Imagen);
-//     }
+//           if(req.file){
+//                     product.setImagen(Imagen);
+//                 }        
 
-//     productSchema
-//         .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock, Imagen}})
+//     product
+//         .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock}})
 //         .then((data) => res.json(data))
 //         .catch((error)=> res.json({message: error}))
 // })
 
 
-//*********************  funcional  *********************************** */
-// router.put("/product/:id", (req,res)=>{
-//     const {id} = req.params;
-//     const {Producto, Descripcion, Precio, Stock, Imagen} = req.body;
-
-
-//     productSchema
-//         .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock, Imagen}})
-//         .then((data) => res.json(data))
-//         .catch((error)=> res.json({message: error}))
-// })
-
+router.put("/product/:id", (req,res)=>{
+    const {id} = req.params;
+    const {Producto, Descripcion, Precio, Stock} = req.body;
+    productSchema
+        .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock}})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
 
 
 //delete a user
