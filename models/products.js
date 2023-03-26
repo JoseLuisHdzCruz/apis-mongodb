@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const productSchema = new mongoose.Schema({
+const productSchema =  mongoose.Schema({
     Producto: {
         type: String,
         require: true

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     Nombre: {
         type: String,
         require: true
@@ -28,7 +29,16 @@ const userSchema = mongoose.Schema({
     Password: {
         type: String,
         require: true
+    },
+    Pregunta: {
+        type: String,
+        require: true
+    },
+    Respuesta: {
+        type: String,
+        require: true
     }
 })
+
 
 module.exports = mongoose.model('User', userSchema);
