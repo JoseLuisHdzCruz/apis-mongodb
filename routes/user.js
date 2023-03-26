@@ -78,26 +78,20 @@ router.post("/users", addUser)
 
  //*********************  Actualizar Usuario ************************** */
 
-// async function updUser (req,res){
-//   const hashedPassword = await hashPassword(req.body.Password);
-//   const {id} = req.params;
-//   // const {Telefono, Correo, Usuario} = req.body;
-//   // const {Password} = hashedPassword;
+async function updUser (req,res){
+  
+  const {id} = req.params;
+  const {Telefono, Correo, Usuario} = req.body;
+  // const {Password} = hashedPassword;
+  const Password = await hashPassword(req.body.Password);
+  
+  await userSchema
+      .updateOne({_id: id},{$set :{ Telefono, Correo, Usuario, Password}})
+      .then((data) => res.json(data))
+      .catch((error)=> res.json({message: error}))
+}
 
-//   const user = new userSchema({
-//     Telefono:   req.body.Telefono,
-//     Correo:     req.body.Correo,
-//     Usuario:    req.body.Usuario,
-//     Password:   hashedPassword
-// });
-        
-//   await user
-//       .updateOne({_id: id},{$set :{ Telefono, Correo, Usuario, Password}})
-//       .then((data) => res.json(data))
-//       .catch((error)=> res.json({message: error}))
-// }
-
-// router.put("/users/:id", updUser)
+router.put("/users/:id", updUser)
 
 // //*****************  Login  ********************* */
 
