@@ -40,6 +40,14 @@ router.get("/obtPregunta", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
+router.get("/compRespuesta", (req,res)=>{
+    const {Respuesta, Usuario} = req.body;
+    userSchema
+        .find({Respuesta: Respuesta, Usuario: Usuario},{Respuesta: 1, _id: 0})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
 //update a user
 
 
