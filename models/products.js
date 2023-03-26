@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-const productSchema = mongoose.Schema({
+const Schema = mongoose.Schema;
+
+const productSchema = Schema({
     Producto: {
         type: String,
         require: true
@@ -21,6 +24,15 @@ const productSchema = mongoose.Schema({
         type: String,
         require: true
     }
+
+    
 })
+
+productSchema.methods.setImagen = function setImagen(filename){
+    const host = process.env.APP_HOST;
+    this.Imagen = `${host}/public/${filename}`
+}
+
+
 
 module.exports = mongoose.model('Product', productSchema);

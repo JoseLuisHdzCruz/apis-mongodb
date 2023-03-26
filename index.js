@@ -9,6 +9,7 @@ const prototypeRoutes = require("./routes/prototype");
 const app = express();
 
 const port = process.env.PORT || 9000;
+const host = process.env.APP_HOST;
 
 //middleware
 app.use(express.json());
@@ -17,9 +18,14 @@ app.use('/api', adminRoutes);
 app.use('/api', productRoutes);
 app.use('/api', prototypeRoutes);
 
+// const direccion = "../storage/imgs";
+
+app.use('/public', express.static(`${__dirname}/storage/imgs`))
+
 //routes
 app.get('/',(req, res) => {
-    res.send("welcome to my API");
+    res.send(__dirname);
+
 })
 
 //mongodb connection
