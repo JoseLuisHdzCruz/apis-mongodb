@@ -43,10 +43,12 @@ router.get("/obtPregunta", (req,res)=>{
 router.get("/compRespuesta", (req,res)=>{
     const {Respuesta, Usuario} = req.body;
     userSchema
-        .find({Respuesta: Respuesta, Usuario: Usuario},{Respuesta: 1, _id: 0})
+        .find({Respuesta: Respuesta, Usuario: Usuario},{Respuesta: 1,  _id: 1})
         .then((data) => res.json(data))
         .catch((error)=> res.json({message: error}))
 })
+
+
 
 //update a user
 
@@ -109,6 +111,22 @@ async function updUser (req,res){
 }
 
 router.put("/users/:id", updUser)
+
+//***************  Actualizar contraseña  ****************** */
+
+async function updPass (req,res){
+  
+    const {id} = req.params;
+    // const {Password} = hashedPassword;
+    const Password = await hashPassword(req.body.Password);
+    
+    await userSchema
+        .updateOne({_id: id},{$set :{Password}})
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+  }
+  
+  router.put("/updPass/:id", updPass)
 
 // //*****************  Login  ********************* */
 
