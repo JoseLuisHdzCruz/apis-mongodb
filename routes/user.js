@@ -70,10 +70,51 @@ const hashPassword = async (Password) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(Password, salt);
     return hashedPassword;
-  }
+}
+
+const compare = async (passwordPlain, hashPassword) => {
+    return await bcrypt.compare(passwordPlain, hashPassword);
+}
+
+//*********************  Desifrar contraseña  ************************ */
+const loginctrl = async (req, res) => {
+    try{
+        const {Usuario, Password} = req.body;
+        const user = await userSchema.findOne({Usuario});
+
+        if(!user){
+            res.status(404);
+            res.send({
+                error: "User not foud"
+            })
+            return
+        }
+        const checkPassword = await compare(Password, userSchema.Password);
+        if(checkPassword){
+            res.send({
+                data: user
+            })
+            return
+        }
+        if(!checkPassword){
+            res.status(404);
+            res.send({
+                error: "Invalid password"
+            })
+            return
+        }
+    }catch(error){
+        console.error(`Error en las credenciales ${error.message}`);
+    }
+
+}
+
+router.post("/login", loginctrl)
+
+//*********************  Insertar usuarios  *********************** */
 
 async function addUser (req,res){
-    const hashedPassword = await hashPassword(req.body.Password);
+    // const hashedPassword = await hashPassword(req.body.Password);
     const user = new userSchema({
         Nombre:     req.body.Nombre,
         ApPaterno:  req.body.ApPaterno,
@@ -81,7 +122,7 @@ async function addUser (req,res){
         Telefono:   req.body.Telefono,
         Correo:     req.body.Correo,
         Usuario:    req.body.Usuario,
-        Password:   hashedPassword,
+        Password:   req.body.Password,
         Pregunta:   req.body.Pregunta,
         Respuesta:  req.body.Respuesta
 
@@ -100,9 +141,9 @@ router.post("/users", addUser)
 async function updUser (req,res){
   
   const {id} = req.params;
-  const {Telefono, Correo, Usuario} = req.body;
+  const {Telefono, Correo, Usuario, Password} = req.body;
   // const {Password} = hashedPassword;
-  const Password = await hashPassword(req.body.Password);
+//   const Password = await hashPassword(req.body.Password);
   
   await userSchema
       .updateOne({_id: id},{$set :{ Telefono, Correo, Usuario, Password}})
@@ -117,8 +158,8 @@ router.put("/users/:id", updUser)
 async function updPass (req,res){
   
     const {id} = req.params;
-    // const {Password} = hashedPassword;
-    const Password = await hashPassword(req.body.Password);
+    const {Password} = req.body;
+    // const Password = await hashPassword(req.body.Password);
     
     await userSchema
         .updateOne({_id: id},{$set :{Password}})
@@ -127,47 +168,5 @@ async function updPass (req,res){
   }
   
   router.put("/updPass/:id", updPass)
-
-// //*****************  Login  ********************* */
-
-// router.get("/log/", (req,res)=>{
-//     const {Usuario, Password} = req.body;
-
-//     if (!Usuario || !Password) {
-//         return res.status(400).send('Datos incompletos');
-//       }
-    
-    
-
-//     // Si el login es válido
-//     req.session.user = user;
-//     res.send('Login exitoso');
-
-//     // Si el login no es válido
-//     res.status(401).send('Credenciales inválidas');
-// })
-
-// async function authenticateUser(req,res) {
-//     // Buscar al usuario en la base de datos
-//     const {Usuario} = req.body;
-//     const {Password} = req.body;
-//     try{
-//         const user = 
-//           await userSchema.findOne({ Usuario })
-//           .then((data) => res.json(data))
-//           .catch((error)=> res.json({message: error}))
-//         ;
-  
-//         const isMatch = await bcrypt.compare(Password, user.Password);
-//         if (isMatch) {
-//           return user;
-//         }
-//     } catch (error) {
-//         console.error(error);
-//     }
-//   }
-
-
-//   router.get("/login", authenticateUser)
 
 module.exports = router;
