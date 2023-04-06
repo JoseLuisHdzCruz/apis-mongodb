@@ -73,4 +73,12 @@ router.delete("/product/:id", (req,res)=>{
 })
 
 
+router.get("/productA", (req,res)=>{
+    productSchema
+        .aggregate([{ $sample: { size: 3 } }])
+        .then((data) => res.json(data))
+        .catch((error)=> res.json({message: error}))
+})
+
+
 module.exports = router;
