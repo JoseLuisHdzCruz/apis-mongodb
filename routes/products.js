@@ -1,28 +1,34 @@
 const express= require("express");
 const productSchema = require("../models/products");
-const upload = require("../libs/storage");
+const parser = require("../libs/cloudinary")
 
 const router = express.Router();
 
+  //*************  Agregar producto  **************************** */
+  router.post('/product', parser.single('Imagen'), async (req, res) => {
+    try {
+      const { Producto, Descripcion, Precio, Stock } = req.body;
 
-async function addProduct (req,res){
-    const product = productSchema(req.body);
+      // Crear un nuevo producto
+      const product = new productSchema({
+        Producto,
+        Descripcion,
+        Precio,
+        Stock,
+        Imagen:req.file.path
+      });
 
-    if(req.file){
-        const {filename} = req.file;
-        product.setImagen(filename);
+      // Guardar el producto en la base de datos
+      await product.save();
+  
+      res.send({ message: 'Producto creado correctamente' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: 'Error al crear el producto' });
     }
+  });
 
-    product
-        .save()
-        .then((data) => res.json(data))
-        .catch((error)=> res.json({message: error}))
-}
-router.post('/product', upload.single('Imagen'), addProduct)
-
-
-
-//get all user
+//*************  Obtener productos  **************************** */
 router.get("/product", (req,res)=>{
     productSchema
         .find()
@@ -30,7 +36,7 @@ router.get("/product", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
-//get a user
+//*************  Obtener producto en especifico  **************************** */
 router.get("/product/:id", (req,res)=>{
     const {id} = req.params;
     productSchema
@@ -39,31 +45,36 @@ router.get("/product/:id", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
-//*************  Actualizar  **************************** */
+//*************  Actualizar producto  **************************** */
 
-// router.put("/product/:id", upload.single('Imagen'), (req,res)=>{
-//     const {id} = req.params;
-//     const {Producto, Descripcion, Precio, Stock} = req.body;
-//     const Imagen = productSchema.setImagen(req.file.Imagen);
+router.put('/product/:id', parser.single('Imagen'), async (req, res) => {
+  try {
+    const { Producto, Descripcion, Precio, Stock } = req.body;
+    const { id } = req.params;
+    let updateFields = {
+      Producto,
+      Descripcion,
+      Precio,
+      Stock
+    };
+  
+    // Actualizar imagen en Cloudinary si se envió una nueva imagen
+    if (req.file) {
+      updateFields.Imagen = req.file.path;
+    }
 
-//         productSchema
-//         .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock, Imagen}})
-//         .then((data) => res.json(data))
-//         .catch((error)=> res.json({message: error}))
-// })
+    // Actualizar producto en la base de datos
+    const updatedProduct = await productSchema.findByIdAndUpdate(id, updateFields, { new: true });
+
+    res.send({ message: 'Producto actualizado correctamente', updatedProduct });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Error al actualizar el producto' });
+  }
+});
 
 
-router.put("/product/:id", (req,res)=>{
-    const {id} = req.params;
-    const {Producto, Descripcion, Precio, Stock} = req.body;
-    productSchema
-        .updateOne({_id: id},{$set :{Producto, Descripcion, Precio, Stock}})
-        .then((data) => res.json(data))
-        .catch((error)=> res.json({message: error}))
-})
-
-
-//delete a user
+//*************  Eliminar producto  **************************** */
 router.delete("/product/:id", (req,res)=>{
     const {id} = req.params;
     productSchema
@@ -72,7 +83,7 @@ router.delete("/product/:id", (req,res)=>{
         .catch((error)=> res.json({message: error}))
 })
 
-
+//*************  Obtener productos al azar  **************************** */
 router.get("/productA", (req,res)=>{
     productSchema
         .aggregate([{ $sample: { size: 3 } }])

@@ -25,10 +25,10 @@ const productSchema = mongoose.Schema({
 })
 
 
-productSchema.methods.setImagen = function setImagen(filename){
-    const host = process.env.APP_HOST;
-    this.Imagen = `${host}/public/${filename}`
+productSchema.methods.setImagen = function setImagen(public_id, secure_url){
+    this.Imagen = secure_url;
 }
+
 
 
 
