@@ -27,7 +27,7 @@ app.use('/public', express.static(`${__dirname}/storage/imgs`))
 
 //routes
 app.get('/',(req, res) => {
-    res.send("__dirname");
+    res.send("Pagina de inicio");
 
 })
 
